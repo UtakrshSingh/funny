@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>💖 you can't say no! 💖</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(
+          145deg,
+          #ffe6f0 0%,
+          #ffc1cc 70%,
+          #ffb3c6 100%
+        );
+        background-size: 200% 200%;
+        animation: softGlow 12s ease infinite;
+        position: relative;
+        overflow: hidden;
+        padding: 1rem;
+      }
+      @keyframes softGlow {
+        0% {
+          background-position: 0% 0%;
+        }
+        50% {
+          background-position: 100% 100%;
+        }
+        100% {
+          background-position: 0% 0%;
+        }
+      }
+      .heart-float {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .heart-float i {
+        position: absolute;
+        display: block;
+        color: rgba(255, 105, 150, 0.25);
+        font-size: 1.8rem;
+        animation: float 7s linear infinite;
+        user-select: none;
+        opacity: 0.7;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(100vh) rotate(0deg) scale(0.8);
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(-20vh) rotate(360deg) scale(1.2);
+          opacity: 0;
+        }
+      }
+      .page {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 40px;
+        border: 2px solid rgba(255, 220, 230, 0.7);
+        box-shadow: 0 25px 40px -10px rgba(255, 120, 160, 0.3),
+          0 0 0 2px rgba(255, 245, 250, 0.5) inset;
+        padding: 2.5rem 2rem;
+        width: 420px;
+        max-width: 90vw;
+        transition: opacity 0.6s ease, transform 0.4s ease;
+        opacity: 1;
+        transform: scale(1);
+        z-index: 10;
+        position: relative;
+      }
+      .page.fade-out {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 2.1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #b3405a;
+        text-shadow: 0 2px 8px rgba(255, 215, 225, 0.8);
+        letter-spacing: -0.01em;
+      }
+      p {
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: #6d3b4f;
+        margin: 0.8rem 0 2rem 0;
+        background: rgba(255, 255, 255, 0.4);
+        padding: 0.3rem 1.2rem;
+        border-radius: 60px;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 4px 10px rgba(255, 200, 220, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+      }
+      .buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 0.8rem;
+        position: relative;
+        min-height: 60px;
+      }
+      button {
+        padding: 0.85rem 2.3rem;
+        border: none;
+        border-radius: 60px !important;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 18px rgba(255, 120, 160, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(6px);
+        color: #a1355a;
+        min-width: 120px;
+      }
+      .yes-btn {
+        background: rgba(255, 230, 240, 0.9);
+        color: #b13e63;
+        border: 1px solid #ffb6c1;
+        box-shadow: 0 8px 22px #ffb0c0;
+      }
+      .yes-btn:hover {
+        background: #ffe2ed;
+        transform: scale(1.1) translateY(-3px);
+        box-shadow: 0 15px 30px #ffa5bc;
+        border-color: #ff94aa;
+      }
+      .no-btn {
+        background: rgba(245, 215, 225, 0.8);
+        color: #7f4a5c;
+        border: 1px solid #f9a8b8;
+        box-shadow: 0 8px 20px #f9acbc;
+        cursor: not-allowed;
+      }
+
+      /* PAGE 4 — no button is fixed to viewport so it can roam freely */
+      #moveNo {
+        position: fixed;
+        z-index: 9999;
+        transition: left 0.12s ease, top 0.12s ease;
+        cursor: not-allowed;
+        pointer-events: auto;
+        display: none; /* hidden until page4 is shown */
+      }
+
+      .page::after {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 42px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(255, 255, 255, 0.6),
+          transparent 70%
+        );
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      /* PAGE 5 */
+      #page5 .gift-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        width: 100%;
+      }
+      .gif-container {
+        width: 200px;
+        height: 200px;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: 0 20px 30px rgba(255, 80, 120, 0.3);
+        border: 4px solid white;
+        margin: 0.5rem 0 0.2rem;
+        background: #ffeef2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+      .gif-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .heart-message {
+        font-family: "Playfair Display", serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #b33b5c;
+        margin: 0.5rem 0 0.2rem;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 0.4rem 1.8rem;
+        border-radius: 60px;
+        backdrop-filter: blur(4px);
+        line-height: 1.4;
+        border: 2px solid white;
+      }
+      .cute-note {
+        font-size: 1.2rem;
+        background: rgba(255, 220, 240, 0.7);
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        color: #9c3f5c;
+        margin: 1rem 0 0.5rem;
+        max-width: 280px;
+      }
+      #page5 h2 {
+        font-size: 2.2rem;
+        margin-bottom: 0.2rem;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="heart-float" id="heartContainer"></div>
+
+    <!-- PAGE 1 -->
+    <div class="page" id="page1">
+      <h2>💗 question 1 💗</h2>
+      <p>do you like this website? ✨</p>
+      <div class="buttons">
+        <button class="yes-btn" onclick="goToPage(5)">yes 💖</button>
+        <button class="no-btn" onclick="goToPage(2)">no 💔</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page2">
+      <h2>🌸 question 2 🌸</h2>
+      <p>are you enjoying it? 🥰</p>
+      <div class="buttons">
+        <button class="yes-btn" onclick="goToPage(5)">yes 🥹</button>
+        <button class="no-btn" onclick="goToPage(3)">no 😿</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page3">
+      <h2>🍰 question 3 🍰</h2>
+      <p>should we continue? 💫</p>
+      <div class="buttons">
+        <button class="yes-btn" onclick="goToPage(5)">yes 🎀</button>
+        <button class="no-btn" onclick="goToPage(4)">no 🌧️</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page" id="page4">
+      <h2>😏 final question 💘</h2>
+      <p>are you sure you want to say NO?</p>
+      <div class="buttons">
+        <button class="yes-btn" onclick="goToPage(5)">yes 🫢</button>
+        <!-- placeholder keeps layout; real button is fixed overlay -->
+        <div style="min-width: 120px; height: 52px"></div>
+      </div>
+      <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.7">
+        (the no button is running away! 🏃‍♀️💨)
+      </p>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page" id="page5">
+      <h2>🎉 YAY! 💖</h2>
+      <div class="gift-box">
+        <div class="gif-container">
+          <img
+            src="https://media.tenor.com/9I-dbZhnIwsAAAAi/cute-bear-roses.gif"
+            alt="cute bear proposal gif"
+            onerror="this.src='https://media.tenor.com/8iN6JkqF9psAAAAi/couple-love.gif'"
+          />
+        </div>
+        <div class="heart-message">💌 forever & always? 💌</div>
+        <p class="cute-note">
+          you make my heart flutter 🦋<br />will you be my Valentine? 🌹
+        </p>
+      </div>
+      <div class="buttons" style="margin-top: 1.2rem">
+        <button class="yes-btn" onclick="goToPage(5)">YES! 💞</button>
+      </div>
+    </div>
+
+    <!-- The roaming NO button — fixed to viewport -->
+    <button class="no-btn" id="moveNo">no 🥺</button>
+
+    <script>
+      // ── Page transitions ──────────────────────────────────────────────
+      function goToPage(pageNumber) {
+        const currentActive = document.querySelector(
+          '.page[style*="display: flex"]'
+        );
+        const nextPage = document.getElementById("page" + pageNumber);
+        if (currentActive === nextPage) return;
+
+        const noBtn = document.getElementById("moveNo");
+
+        if (currentActive) {
+          currentActive.classList.add("fade-out");
+          setTimeout(() => {
+            currentActive.style.display = "none";
+            currentActive.classList.remove("fade-out");
+            nextPage.style.display = "flex";
+            void nextPage.offsetWidth;
+
+            // Show/hide the roaming no button
+            if (pageNumber === 4) {
+              placeNoBtnInitial();
+              noBtn.style.display = "block";
+            } else {
+              noBtn.style.display = "none";
+            }
+          }, 300);
+        } else {
+          nextPage.style.display = "flex";
+          if (pageNumber === 4) {
+            placeNoBtnInitial();
+            noBtn.style.display = "block";
+          }
+        }
+      }
+
+      window.addEventListener("load", () => {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => (p.style.display = "none"));
+        goToPage(1);
+      });
+
+      // ── Roaming NO button logic ───────────────────────────────────────
+      const noBtn = document.getElementById("moveNo");
+
+      // Block any click
+      noBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      });
+      noBtn.addEventListener("mousedown", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      });
+
+      let btnX = 0,
+        btnY = 0; // current btn centre
+      let btnW = 0,
+        btnH = 0; // btn dimensions
+
+      function placeNoBtnInitial() {
+        // Position next to where the spacer placeholder sits
+        const page4 = document.getElementById("page4");
+        const spacer = page4.querySelector(".buttons div");
+        const rect = spacer.getBoundingClientRect();
+        btnW = noBtn.offsetWidth || 130;
+        btnH = noBtn.offsetHeight || 52;
+        btnX = rect.left + rect.width / 2 - btnW / 2;
+        btnY = rect.top + rect.height / 2 - btnH / 2;
+        applyPos();
+      }
+
+      function applyPos() {
+        noBtn.style.left = btnX + "px";
+        noBtn.style.top = btnY + "px";
+      }
+
+      // Flee from the cursor — called on mousemove over the whole document
+      document.addEventListener("mousemove", (e) => {
+        if (noBtn.style.display !== "block") return;
+
+        btnW = noBtn.offsetWidth;
+        btnH = noBtn.offsetHeight;
+
+        const cursorX = e.clientX;
+        const cursorY = e.clientY;
+
+        // Centre of button
+        const centerX = btnX + btnW / 2;
+        const centerY = btnY + btnH / 2;
+
+        const dx = centerX - cursorX;
+        const dy = centerY - cursorY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const triggerRadius = 120; // how close before it runs
+
+        if (dist < triggerRadius) {
+          // Flee distance scales with closeness
+          const fleeStrength = (triggerRadius - dist) / triggerRadius;
+          const fleeDist = 120 + fleeStrength * 80;
+
+          // Direction: away from cursor
+          const angle = Math.atan2(dy, dx);
+          // Add a tiny random wobble so it feels alive
+          const wobble = (Math.random() - 0.5) * 0.4;
+
+          let newX = btnX + Math.cos(angle + wobble) * fleeDist;
+          let newY = btnY + Math.sin(angle + wobble) * fleeDist;
+
+          // Clamp to viewport with padding
+          const pad = 16;
+          newX = Math.min(Math.max(newX, pad), window.innerWidth - btnW - pad);
+          newY = Math.min(Math.max(newY, pad), window.innerHeight - btnH - pad);
+
+          btnX = newX;
+          btnY = newY;
+          applyPos();
+        }
+      });
+
+      // ── Floating hearts ───────────────────────────────────────────────
+      function createHearts() {
+        const container = document.getElementById("heartContainer");
+        const icons = [
+          "❤️",
+          "🧡",
+          "💖",
+          "💗",
+          "💘",
+          "💝",
+          "💕",
+          "💞",
+          "🌸",
+          "✨",
+        ];
+        for (let i = 0; i < 24; i++) {
+          const heart = document.createElement("i");
+          heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+          heart.style.left = Math.random() * 100 + "%";
+          heart.style.animationDuration = Math.random() * 8 + 5 + "s";
+          heart.style.fontSize = Math.random() * 1.8 + 1.2 + "rem";
+          heart.style.animationDelay = Math.random() * -10 + "s";
+          heart.style.opacity = Math.random() * 0.3 + 0.2;
+          container.appendChild(heart);
+        }
+      }
+      createHearts();
+      window.goToPage = goToPage;
+    </script>
+  </body>
+</html>
